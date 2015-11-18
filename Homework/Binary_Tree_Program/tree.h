@@ -100,6 +100,7 @@ public:
         
         It(Node *p, const stack<Node*>& s);
         void del(bool erase = true);   // Delete the node referred to by *this
+        bool deleteAnother();
     };
     
     Tree();
