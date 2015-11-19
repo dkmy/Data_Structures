@@ -131,6 +131,8 @@ Tree::It Tree::It::operator++(int) {
 }    
 
 Tree::It& Tree::It::operator++() {
+//	cout << "r" << "\n";
+//	cout << *(*this)<<"\n";
 	
 	Tree::It backup = *this;
 	
@@ -380,99 +382,6 @@ void Tree::It::del(bool erase) {
 	}
 }
 
-bool Tree::It::deleteAnother() {
-	
-	if (!p){ //not even there lmao
-		return false;
-	}	
-	
-	
-	if (!p -> r && !p -> l){ //neither open, just delete
-		
-		bool tempBool = false;
-		if (p == root){
-			tempBool = true;
-		}
-		if (s.top() -> l == p){
-			s.top() -> l = 0;
-		}
-		if (s.top() -> r == p){
-			s.top() -> r = 0;
-		}
-		Node* tempDeleter = p;
-		delete tempDeleter;
-		p = s.top();
-//		if (tempBool){
-//			root = p;
-//		}
-		s.pop();
-		return true;
-	}
-	
-	if (p -> r && !p -> l){ //right is open I'M ON HERE FUDGE		
-		if (s.empty()){
-			Node *temp = p;
-			p = p -> r;
-			delete temp;
-//			changeRoot(p);
-			return true;
-		}
-		if (s.top() -> l == p){
-			s.top() -> l = p -> r;
-		}
-		if (s.top() -> r == p){
-			s.top() -> r = p -> r;
-		}
-		
-		Node *temp = p;
-		p = p -> r;
-		
-		delete temp;
-		return true;
-	}
-	
-	if (!p -> r && p -> l){ //left is open
-		if (s.empty()){
-					Node *temp = p;
-					p = p -> l;
-					delete temp;
-		//			changeRoot(p);
-					return true;
-				}
-		if (s.top() -> r == p){
-			s.top() -> r = p -> l;
-		}
-		if (s.top() -> l == p){
-			s.top() -> l = p -> l;
-		}
-		Node *temp = p;
-		p = p -> l;
-		
-		delete temp;
-		return true;
-	}
-	
-	if (p -> r && p -> l){ //lo of the right subtree is the new p
-		Node *temp = p;
-		temp = temp -> r;
-		Node *tempParent = p;
-		while (temp -> l){
-			tempParent = temp;
-			temp = temp -> l;
-		}
-		//tempParent is parent of temp now
-		if (p != tempParent){
-			tempParent -> l = temp -> r;  //if the leftmost of subtree has a right child
-		}
-		temp -> l = p -> l;
-		temp -> r = p -> r;
-		Node *trash = p;
-		p = temp;
-		delete trash;
-		return true;
-	}
-	return false;
-}
 
 
 size_t Tree::size() const{
@@ -514,11 +423,27 @@ Tree::It Tree::hi() const{
 }
 
 Tree::It Tree::get(const string& key) const {
-	It temp = lo();
-	while (temp.p && ((temp.p)->e).key != key) {		
-		++temp;	
+//	It temp = lo(); //i have a feeling that i will get an F with this method
+//	while (temp.p && ((temp.p)->e).key != key) {		
+//		++temp;	
+//	}
+//	return temp;
+	
+	stack<Node*> tempStack;
+	Node* tempNode = root;
+	Tree::It traverser(tempNode, tempStack);
+	
+	while (traverser.p && ((traverser.p)->e).key != key){
+		if ((traverser.p->e.key).compare(key) < 0){
+			++traverser;
+		}
+		else{
+			--traverser;
+		}
 	}
-	return temp;
+	return traverser;
+	
+	
 }
 
 bool Tree::set(const string& key, double val){
@@ -527,16 +452,20 @@ bool Tree::set(const string& key, double val){
 		root = temp;
 		return false;
 	}
-	It temp = lo();
-	It end = hi(); //don't wanna fall off!
-	while (temp != end){
-		if (((temp.p)->e).key < key){
+
+	stack<Node*> tempStack;
+	Node* tempNode = root;
+	Tree::It temp(tempNode, tempStack);
+	It end = hi();
+	while (temp != end && temp.p && ((temp.p)->e).key != key){
+		if ((temp.p->e.key).compare(key) < 0){
 			++temp;
 		}
 		else{
-			break;
+			--temp;
 		}
 	}
+	
 	if (((temp.p)->e).key == key){ //easy part
 		((temp.p)->e).val = val;
 		return true; 
@@ -562,6 +491,10 @@ bool Tree::del(const string& key) {
 	It tempIt = this -> get(key);
 	Node* p = tempIt.p;
 	stack<Node*> s = tempIt.s;
+	bool tempBool = false;
+	if (p == root){
+		tempBool = true;
+	}
 	
 	if (!p){ //not even there lmao
 		return false;
@@ -569,10 +502,9 @@ bool Tree::del(const string& key) {
 	
 	
 	if (!p -> r && !p -> l){ //neither open, just delete
-		
-		bool tempBool = false;
-		if (p == root){
-			tempBool = true;
+		if (tempBool){
+			cout << "deleting tree..." << "\n";
+			exit(-1);
 		}
 		if (s.top() -> l == p){
 			s.top() -> l = 0;
@@ -583,19 +515,21 @@ bool Tree::del(const string& key) {
 		Node* tempDeleter = p;
 		delete tempDeleter;
 		p = s.top();
-//		if (tempBool){
-//			root = p;
-//		}
+		if (tempBool){
+			root = p;
+		}
 		s.pop();
 		return true;
 	}
 	
-	if (p -> r && !p -> l){ //right is open I'M ON HERE FUDGE		
+	if (p -> r && !p -> l){ //right is open I'M ON HERE FUDGE	
 		if (s.empty()){
 			Node *temp = p;
 			p = p -> r;
 			delete temp;
-//			changeRoot(p);
+			if (tempBool){
+				root = p;
+			}
 			return true;
 		}
 		if (s.top() -> l == p){
@@ -614,12 +548,14 @@ bool Tree::del(const string& key) {
 	
 	if (!p -> r && p -> l){ //left is open
 		if (s.empty()){
-					Node *temp = p;
-					p = p -> l;
-					delete temp;
-		//			changeRoot(p);
-					return true;
-				}
+			Node *temp = p;
+			p = p -> l;
+			delete temp;
+			if (tempBool){
+				root = p;
+			}
+			return true;
+		}
 		if (s.top() -> r == p){
 			s.top() -> r = p -> l;
 		}
@@ -649,6 +585,9 @@ bool Tree::del(const string& key) {
 		temp -> r = p -> r;
 		Node *trash = p;
 		p = temp;
+		if (tempBool){
+			root = p;
+		}
 		delete trash;
 		return true;
 	}
@@ -669,7 +608,9 @@ int main() {
 	tree.set("K", 11);
 	tree.set("L", 12);
 	tree.del("A");
+	tree.del("L");
 	std::cout << *(++tree.lo()) << "\n";
+	
 	return 0;
 }
 
