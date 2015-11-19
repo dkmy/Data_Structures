@@ -100,7 +100,7 @@ public:
         
         It(Node *p, const stack<Node*>& s);
         void del(bool erase = true);   // Delete the node referred to by *this
-        bool deleteAnother();
+        
     };
     
     Tree();
@@ -117,6 +117,7 @@ public:
     
     // For debugging only
     bool check_sizes() const;
+    void changeRoot(Node* k);
     
 private:
     Node *root;
