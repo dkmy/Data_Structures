@@ -102,7 +102,7 @@ Tree::It Tree::It::operator++(int) {
 	stack<Node*> tempRootCheck = s;
 	Node* tempRootNode = p;
 
-	if (!tempRootCheck.empty()){
+	if (!p->r && !tempRootCheck.empty()){
 		
 		while (!tempRootCheck.empty() && tempRootCheck.top()->r == tempRootNode){
 			tempRootNode = tempRootCheck.top();
@@ -117,8 +117,8 @@ Tree::It Tree::It::operator++(int) {
 			return backup;
 		}
 	}
-	if (tempRootCheck.empty()){ //you were at the last
-		cout << p->e.val << "\n";
+	if (!p->r && tempRootCheck.empty()){ //you were at the last
+//		cout << p->e.val << "\n";
 
 		stack<Node*> tempNewStack;
 		tempNewStack.push(tempRootNode);
@@ -172,7 +172,7 @@ Tree::It Tree::It::operator++(int) {
 		return backup;
 	}
 	return backup;	
-}    
+}  
  
 
 Tree::It& Tree::It::operator++() {
@@ -192,7 +192,7 @@ Tree::It& Tree::It::operator++() {
 	stack<Node*> tempRootCheck = s;
 	Node* tempRootNode = p;
 
-	if (!tempRootCheck.empty()){
+	if (!p->r && !tempRootCheck.empty()){
 		
 		while (!tempRootCheck.empty() && tempRootCheck.top()->r == tempRootNode){
 			tempRootNode = tempRootCheck.top();
@@ -207,8 +207,8 @@ Tree::It& Tree::It::operator++() {
 			return *this;
 		}
 	}
-	if (tempRootCheck.empty()){ //you were at the last
-		cout << p->e.val << "\n";
+	if (!p->r && tempRootCheck.empty()){ //you were at the last
+//		cout << p->e.val << "\n";
 
 		stack<Node*> tempNewStack;
 		tempNewStack.push(tempRootNode);
@@ -266,7 +266,60 @@ Tree::It& Tree::It::operator++() {
 
 Tree::It Tree::It::operator--(int) {
 	Tree::It backup = *this;
+	if (p == 0){
+		Node* tempStart = s.top();
+		if (tempStart -> r){
+			tempStart = tempStart -> r;
+		}
+		while(tempStart -> r){
+			s.push(tempStart);
+			tempStart = tempStart -> r;
+		}
+		p = tempStart;
+		return backup;
+	}
+//	bool tempBool = false;
+//	if (*(*this) == 12){
+//		tempBool = true;
+//		stack<Node*> what = s;
+//	
+//	}
+	
+	//make a temporary stack that goes upp the way up.
+	stack<Node*> tempRootCheck = s;
+	Node* tempRootNode = p;
+	
+	if (!p->l){
+		while (!tempRootCheck.empty() && tempRootCheck.top()->l == tempRootNode){
+			tempRootNode = tempRootCheck.top();
+			tempRootCheck.pop();
+		}
+		
+		if (tempRootCheck.empty()){
+			stack<Node*> temp = stack<Node*>();
+			temp.push(tempRootNode);
+			p = 0;
+			s = temp;
+			return backup;
+		}
+	}
+
+	if (!p->l && tempRootCheck.empty()){ //you were at the last
+//		cout << p->e.val << "\n";
+		
+		stack<Node*> tempNewStack;
+		tempNewStack.push(tempRootNode);
+		while (tempRootNode -> r){
+			tempRootNode = tempRootNode -> r;
+			tempNewStack.push(tempRootNode);
+		}
+		p = tempRootNode;
+		s = tempNewStack;
+		return backup;
+	}
+	
 	if (p -> l){
+	
 		s.push(p);
 		p = p -> l;
 		while (p -> r){
@@ -276,6 +329,7 @@ Tree::It Tree::It::operator--(int) {
 		return backup;
 	}
 	if (p == s.top() -> l){
+
 		while (p == s.top() -> l){
 			p = s.top();
 			s.pop();
@@ -308,10 +362,64 @@ Tree::It Tree::It::operator--(int) {
 	}
 	return backup;	
 }    
+ 
 
 Tree::It& Tree::It::operator--() {
 	Tree::It backup = *this;
+	if (p == 0){
+		Node* tempStart = s.top();
+		if (tempStart -> r){
+			tempStart = tempStart -> r;
+		}
+		while(tempStart -> r){
+			s.push(tempStart);
+			tempStart = tempStart -> r;
+		}
+		p = tempStart;
+		return *this;
+	}
+//	bool tempBool = false;
+//	if (*(*this) == 12){
+//		tempBool = true;
+//		stack<Node*> what = s;
+//	
+//	}
+	
+	//make a temporary stack that goes upp the way up.
+	stack<Node*> tempRootCheck = s;
+	Node* tempRootNode = p;
+	
+	if (!p->l){
+		while (!tempRootCheck.empty() && tempRootCheck.top()->l == tempRootNode){
+			tempRootNode = tempRootCheck.top();
+			tempRootCheck.pop();
+		}
+		
+		if (tempRootCheck.empty()){
+			stack<Node*> temp = stack<Node*>();
+			temp.push(tempRootNode);
+			p = 0;
+			s = temp;
+			return *this;
+		}
+	}
+
+	if (!p->l && tempRootCheck.empty()){ //you were at the last
+//		cout << p->e.val << "\n";
+		
+		stack<Node*> tempNewStack;
+		tempNewStack.push(tempRootNode);
+		while (tempRootNode -> r){
+			tempRootNode = tempRootNode -> r;
+			tempNewStack.push(tempRootNode);
+		}
+		p = tempRootNode;
+		s = tempNewStack;
+		return *this;
+	}
+	
 	if (p -> l){
+	
 		s.push(p);
 		p = p -> l;
 		while (p -> r){
@@ -321,6 +429,7 @@ Tree::It& Tree::It::operator--() {
 		return *this;
 	}
 	if (p == s.top() -> l){
+
 		while (p == s.top() -> l){
 			p = s.top();
 			s.pop();
@@ -354,6 +463,7 @@ Tree::It& Tree::It::operator--() {
 	return *this;	
 }    
 
+
 Tree::It Tree::It::operator+(long j) const{ //i could optimize this by skipping a subtree but....
 	It temp = *this;
 	for (long i = 0; i < j; i++) {
@@ -381,91 +491,110 @@ void Tree::changeRoot(Node* k){
 }
 
 void Tree::It::del(bool erase) {
-
-	if (!p){ //not even there lmao
-		return;
-	}	
-	
-	
-	if (!p -> r && !p -> l){ //neither open, just delete
-		
-		bool tempBool = false;
-//		if (p == root){
-//			tempBool = true;
+//	It tempIt = this -> get(key);
+//	Node* p = tempIt.p;
+//	stack<Node*> s = tempIt.s;
+//	
+//	if (!p){ //not even there lmao
+//		return false;
+//	}	
+//	
+//	
+//	if (!p -> r && !p -> l){ //neither open, just delete
+//		if (tempBool){
+//			cout << "deleting tree..." << "\n";
+//			Node* tempDeleter;
+//			delete tempDeleter;
+//			root = 0;
 //		}
-		if (s.top() -> l == p){
-			s.top() -> l = 0;
-		}
-		if (s.top() -> r == p){
-			s.top() -> r = 0;
-		}
-		Node* tempDeleter = p;
-		delete tempDeleter;
-		p = s.top();
+//		if (s.top() -> l == p){
+//			s.top() -> l = 0;
+//		}
+//		if (s.top() -> r == p){
+//			s.top() -> r = 0;
+//		}
+//		Node* tempDeleter = p;
+//		delete tempDeleter;
+//		p = s.top();
 //		if (tempBool){
 //			root = p;
 //		}
-		s.pop();
-	}
-	
-	if (p -> r && !p -> l){ //right is open I'M ON HERE FUDGE		
-		if (s.empty()){
-			Node *temp = p;
-			p = p -> r;
-			delete temp;
-//			changeRoot(p);
-		}
-		if (s.top() -> l == p){
-			s.top() -> l = p -> r;
-		}
-		if (s.top() -> r == p){
-			s.top() -> r = p -> r;
-		}
-		
-		Node *temp = p;
-		p = p -> r;
-		
-		delete temp;
-	}
-	
-	if (!p -> r && p -> l){ //left is open
-		if (s.empty()){
-					Node *temp = p;
-					p = p -> l;
-					delete temp;
-		//			changeRoot(p);
-				}
-		if (s.top() -> r == p){
-			s.top() -> r = p -> l;
-		}
-		if (s.top() -> l == p){
-			s.top() -> l = p -> l;
-		}
-		Node *temp = p;
-		p = p -> l;
-		
-		delete temp;
-	}
-	
-	if (p -> r && p -> l){ //lo of the right subtree is the new p
-		Node *temp = p;
-		temp = temp -> r;
-		Node *tempParent = p;
-		while (temp -> l){
-			tempParent = temp;
-			temp = temp -> l;
-		}
-		//tempParent is parent of temp now
-		if (p != tempParent){
-			tempParent -> l = temp -> r;  //if the leftmost of subtree has a right child
-		}
-		temp -> l = p -> l;
-		temp -> r = p -> r;
-		Node *trash = p;
-		p = temp;
-		delete trash;
-	}
+//		s.pop();
+//		return true;
+//	}
+//	
+//	if (p -> r && !p -> l){ //right is open I'M ON HERE FUDGE	
+//		if (s.empty()){
+//			Node *temp = p;
+//			p = p -> r;
+//			delete temp;
+//			if (tempBool){
+//				root = p;
+//			}
+//			return true;
+//		}
+//		if (s.top() -> l == p){
+//			s.top() -> l = p -> r;
+//		}
+//		if (s.top() -> r == p){
+//			s.top() -> r = p -> r;
+//		}
+//		
+//		Node *temp = p;
+//		p = p -> r;
+//		
+//		delete temp;
+//		return true;
+//	}
+//	
+//	if (!p -> r && p -> l){ //left is open
+//		if (s.empty()){
+//			Node *temp = p;
+//			p = p -> l;
+//			delete temp;
+//			if (tempBool){
+//				root = p;
+//			}
+//			return true;
+//		}
+//		if (s.top() -> r == p){
+//			s.top() -> r = p -> l;
+//		}
+//		if (s.top() -> l == p){
+//			s.top() -> l = p -> l;
+//		}
+//		Node *temp = p;
+//		p = p -> l;
+//		
+//		delete temp;
+//		return true;
+//	}
+//	
+//	if (p -> r && p -> l){ //lo of the right subtree is the new p
+//		Node *temp = p;
+//		temp = temp -> r;
+//		Node *tempParent = p;
+//		while (temp -> l){
+//			tempParent = temp;
+//			temp = temp -> l;
+//		}
+//		//tempParent is parent of temp now
+//		if (p != tempParent){
+//			tempParent -> l = temp -> r;  //if the leftmost of subtree has a right child
+//		}
+//		temp -> l = p -> l;
+//		temp -> r = p -> r;
+//		Node *trash = p;
+//		p = temp;
+//		if (tempBool){
+//			root = p;
+//		}
+//		delete trash;
+//		return true;
+//	}
+//	return false;
 }
+
 
 
 
@@ -529,21 +658,26 @@ Tree::It Tree::get(const string& key) const {
 }
 
 bool Tree::set(const string& key, double val){
+	
 	if (!root){
 		Node* temp = new Node(Entry(key, val));
 		root = temp;
-		return false;
+		root -> n = 1;
+		return true;
 	}
-
+	
 	stack<Node*> tempStack;
 	Node* tempNode = root;
 	Tree::It temp(tempNode, tempStack);
 	It end = hi();
+	
 	while (temp != end && temp.p && ((temp.p)->e).key != key){
 		if ((temp.p->e.key).compare(key) < 0){
+			(temp.s).push(tempNode);
 			++temp;
 		}
 		else{
+			(temp.s).push(tempNode);
 			--temp;
 		}
 	}
@@ -557,6 +691,11 @@ bool Tree::set(const string& key, double val){
 		Node *addition = new Node(Entry(key, val));
 		(temp.p) -> l = addition;
 		--temp;
+		(addition) -> n = 1;
+		while (!temp.s.empty()){
+			temp.s.top() -> n = ((temp.s.top()) -> n) + 1;
+			temp.s.pop();
+		}
 		return true; //or is it true?
 	}
 	
@@ -564,6 +703,11 @@ bool Tree::set(const string& key, double val){
 		Node *addition = new Node(Entry(key, val));
 		(temp.p) -> r = addition;
 		++temp;
+		(addition) -> n = 1;
+		while (!temp.s.empty()){
+			temp.s.top() -> n = ((temp.s.top()) -> n)+ 1;
+			temp.s.pop();
+		}
 		return true; //or is it true?
 	}
 	return false;
@@ -695,8 +839,10 @@ int main() {
 //	tree.del("L");
 //	++tree.hi();
 //	cout << tree.none() -> p << "\n";
-	std::cout << *(++++tree.hi()) << "\n";
+	std::cout << *(----tree.lo()) << "\n";
+	cout << tree.size() << "\n";
 	
+	    
 	return 0;
 }
 
