@@ -87,6 +87,50 @@ double& Tree::It::operator*() const{
 
 Tree::It Tree::It::operator++(int) {
 	Tree::It backup = *this;
+	if (p == 0){
+		Node* tempStart = s.top();
+		while(tempStart -> l){
+			tempStart = tempStart -> l;
+			s.push(tempStart);
+		}
+		p = tempStart;
+		return backup;
+	}
+	
+	
+	//make a temporary stack that goes upp the way up.
+	stack<Node*> tempRootCheck = s;
+	Node* tempRootNode = p;
+
+	if (!tempRootCheck.empty()){
+		
+		while (!tempRootCheck.empty() && tempRootCheck.top()->r == tempRootNode){
+			tempRootNode = tempRootCheck.top();
+			tempRootCheck.pop();
+		}
+		
+		if (tempRootCheck.empty()){
+			stack<Node*> temp = stack<Node*>();
+			temp.push(tempRootNode);
+			p = 0;
+			s = temp;
+			return backup;
+		}
+	}
+	if (tempRootCheck.empty()){ //you were at the last
+		cout << p->e.val << "\n";
+
+		stack<Node*> tempNewStack;
+		tempNewStack.push(tempRootNode);
+		while (tempRootNode -> l){
+			tempRootNode = tempRootNode -> l;
+			tempNewStack.push(tempRootNode);
+		}
+		p = tempRootNode;
+		s = tempNewStack;
+		return backup;
+	}
+	
 	if (p -> r){
 		s.push(p);
 		p = p -> r;
@@ -129,12 +173,53 @@ Tree::It Tree::It::operator++(int) {
 	}
 	return backup;	
 }    
+ 
 
 Tree::It& Tree::It::operator++() {
-//	cout << "r" << "\n";
-//	cout << *(*this)<<"\n";
-	
 	Tree::It backup = *this;
+	if (p == 0){
+		Node* tempStart = s.top();
+		while(tempStart -> l){
+			tempStart = tempStart -> l;
+			s.push(tempStart);
+		}
+		p = tempStart;
+		return *this;
+	}
+	
+	
+	//make a temporary stack that goes upp the way up.
+	stack<Node*> tempRootCheck = s;
+	Node* tempRootNode = p;
+
+	if (!tempRootCheck.empty()){
+		
+		while (!tempRootCheck.empty() && tempRootCheck.top()->r == tempRootNode){
+			tempRootNode = tempRootCheck.top();
+			tempRootCheck.pop();
+		}
+		
+		if (tempRootCheck.empty()){
+			stack<Node*> temp = stack<Node*>();
+			temp.push(tempRootNode);
+			p = 0;
+			s = temp;
+			return *this;
+		}
+	}
+	if (tempRootCheck.empty()){ //you were at the last
+		cout << p->e.val << "\n";
+
+		stack<Node*> tempNewStack;
+		tempNewStack.push(tempRootNode);
+		while (tempRootNode -> l){
+			tempRootNode = tempRootNode -> l;
+			tempNewStack.push(tempRootNode);
+		}
+		p = tempRootNode;
+		s = tempNewStack;
+		return *this;
+	}
 	
 	if (p -> r){
 		s.push(p);
@@ -399,9 +484,6 @@ bool Tree::check_sizes() const{ // ?????????????????? ??!??!?!??!?!?!?!?!?!??!?!
 	return true; //?!?!?!?!??!?!?!??!!??!?!??!?!?!?
 }
 
-
-
-
 Tree::It Tree::lo() const{
 	stack<Node*> stackTemp;
 	Node* temp = root;
@@ -504,7 +586,9 @@ bool Tree::del(const string& key) {
 	if (!p -> r && !p -> l){ //neither open, just delete
 		if (tempBool){
 			cout << "deleting tree..." << "\n";
-			exit(-1);
+			Node* tempDeleter;
+			delete tempDeleter;
+			root = 0;
 		}
 		if (s.top() -> l == p){
 			s.top() -> l = 0;
@@ -607,9 +691,11 @@ int main() {
 	tree.set("J", 10);
 	tree.set("K", 11);
 	tree.set("L", 12);
-	tree.del("A");
-	tree.del("L");
-	std::cout << *(++tree.lo()) << "\n";
+//	tree.del("A");
+//	tree.del("L");
+//	++tree.hi();
+//	cout << tree.none() -> p << "\n";
+	std::cout << *(++++tree.hi()) << "\n";
 	
 	return 0;
 }
