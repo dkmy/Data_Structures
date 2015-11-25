@@ -503,17 +503,31 @@ void Tree::changeRoot(Node* k){
 
 void Tree::It::del(bool erase) { //please don't use this . please dont.
 
-if (!p){ //not even there lmao
+	if (!p){ //not even there lmao
 		return;
 	}	
 	
+/* find the assumed root */
+	
+	stack<Node*> tempRootFinder = s;
+	Node* tempRoot = s.top();
+	
+	while (tempRootFinder.empty()){
+		tempRoot = tempRootFinder.top();
+		tempRootFinder.pop();
+	}
+	bool tempBool = false;
+	if (p == tempRoot){
+		tempBool = true;
+		Tree treeTemp;
+		treeTemp.root = tempRoot;
+	}
+	
+	
+	
+	
 	
 	if (!p -> r && !p -> l){ //neither open, just delete
-		
-		bool tempBool = false;
-//		if (p == root){
-//			tempBool = true;
-//		}
 		if (s.top() -> l == p){
 			s.top() -> l = 0;
 		}
@@ -524,7 +538,7 @@ if (!p){ //not even there lmao
 		delete tempDeleter;
 		p = s.top();
 //		if (tempBool){
-//			root = p;
+//			changeRoot(p);
 //		}
 		s.pop();
 	}
@@ -588,9 +602,6 @@ if (!p){ //not even there lmao
 	}
 }
 
-
-
-
 size_t Tree::size() const{
 	return root->n;
 }
@@ -653,7 +664,7 @@ Tree::It Tree::get(const string& key) const {
 bool Tree::set(const string& key, double val){
 //	cout << root -> n << "\n";
 	if (!root){
-		cout << "here maybe" << "\n";
+//		cout << "here maybe" << "\n";
 		Node* temp = new Node(Entry(key, val));
 		root = temp;
 		root -> n = 1;
@@ -677,7 +688,7 @@ bool Tree::set(const string& key, double val){
 	
 	if (((temp.p)->e).key == key){ //easy part
 		((temp.p)->e).val = val;
-		return true; 
+		return false; 
 	}
 	
 	if (((temp.p)->e).key > key){ //create new
@@ -854,8 +865,9 @@ int main() {
 	tree.set("L", 12);
 	tree.del("A");
 	tree.del("C");
-//	++tree.hi();
-	std::cout << *(--------tree.lo()) << "\n";
+	++tree.hi();
+	std::cout << *(tree.lo()) << "\n";
+//	cout << (tree.root->e.val);
 	cout << tree.size() << "\n";
 	
 	/*
