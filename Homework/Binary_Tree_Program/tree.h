@@ -100,10 +100,12 @@ public:
         
         It(Node *p, const stack<Node*>& s);
         void del(bool erase = true);   // Delete the node referred to by *this
+        //wait this isn't possible you need an explicit reference
         
     };
     
     Tree();
+    Tree(Node* rootThing);
     ~Tree();
     
     size_t size() const;                        // # of nodes in tree

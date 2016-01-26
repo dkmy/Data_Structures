@@ -98,7 +98,7 @@ Mod Mod::inv(long r0){	 //extended euclidean algorithm.
 	long temp1;
 	
 	if (r0 == 0){ //division by 0
-		cout << "Division by 0" << "\n";
+		cout << "inverting a 0" << "\n";
 		exit(-1);
 	}
 	
@@ -141,12 +141,13 @@ Mod Mod::operator-() const{
 }
 
 Mod Mod::pwr(long e) const{ //exact same idea as *=. repeated squaring is used.
+
 	if (e == 0){
 		Mod prot = 1;
 		return prot;
 	}
 	Mod prot = 0;
-	if (e > 1){
+	if (e >= 0){
 		Mod temp = x;
 		prot = temp;
 	}
@@ -251,11 +252,87 @@ ostream& operator<<(ostream& os, const Mod& m) {
 }
 
 int main(){
-	Mod c = 13;
-	cout << (3*c).val() << "\n";
-	
+//	cout << "Hello World" << "\n";
+	Mod::set_modulus(17);
+	Mod a = 0;
+	cout << (a.pwr(1).val());
 	
 	
 	return 0;
-
+////	Mod::set_modulus(343);
+////	Mod c = -1;
+////	cout << (c.pwr(123454321)).val() << "\n";
+////	
+////	return 0;
+//FILE * fp;
+//fp = fopen("test.csv", "r");
+//
+//const char * printval = "value %s(%ld) != %s(%ld) case %d\n";
+//int count = 0;
+//long modulus, a, b, mod_a, mod_b, sum, difference, product, quotient, pwr;
+//for (int i = 0; i < 96000; i++) {
+//	// cout << i << "\n";
+//	fscanf(fp, "%ld, %ld, %ld, %ld, %ld, %ld, %ld, %ld, %ld, %ld", &modulus, &a, &b, &mod_a, &mod_b, &sum, &difference, &product, &quotient, &pwr);
+//	// printf("%ld, %ld, %ld, %ld, %ld, %ld, %ld, %ld, %ld, %ld\n", modulus, a, b, mod_a, mod_b, sum, difference, product, quotient, pwr);
+//
+//	// cout << modulus << "\n";
+//	// cout << a << "\n";
+//	// cout << b << "\n";
+//
+//	Mod::set_modulus(modulus);
+//	Mod x(a);
+//	Mod y(b);
+//	count++;
+//	if (x.val() != mod_a) {
+//		count--;
+//		printf(printval, "x.val", x.val(), "mod_a", mod_a, i);
+//		// return -1;
+//	}
+//	count++;
+//	if (y.val() != mod_b) {
+//		count--;
+//		printf(printval, "y.val", y.val(), "mod_b", mod_b, i); 
+//		// return -1;
+//	}
+//	Mod s = (x + y);
+//	// cout << "sum" << "\n";
+//	count++;
+//	if (s.val() != sum) {
+//		count--;
+//		printf(printval, "x + y", s.val(), "sum", sum, i);
+//		// return -1;
+//	}
+//	// cout << "difference" << "\n";
+//	Mod d = (x - y);
+//	count++;
+//	if (d.val() != difference) {
+//		count--;
+//		printf(printval, "x - y", d.val(), "difference", difference, i);
+//		// return -1;
+//	}
+//	// cout << "product" << "\n";
+//	Mod p = (x * y);
+//	count++;
+//	if (p.val() != product) {
+//		count--;
+//		printf(printval, "x * y", p.val(), "product", product, i);
+//		// return -1;
+//	}
+//	// cout << "quotient" << "\n";
+//	Mod q = (x / y);
+//	count++;
+//	if (q.val() != quotient) {
+//		count--;
+//		printf(printval, "x / y", q.val(), "quotient", quotient, i);
+//		// return -1;
+//	}
+// cout << "pwr" << "\n";
+//	Mod pw = x.pwr(b);
+//	count++;
+//	if (pw.val() != pwr) {
+//		count--;
+//		printf(printval, "x ^ y", pw.val(), "pwr", pwr, i);
+//		// return -1;
+//	}
+//}
 }
