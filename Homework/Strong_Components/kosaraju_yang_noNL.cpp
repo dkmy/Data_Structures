@@ -105,7 +105,7 @@ int main(int argc, char *argv[]) {
 		graph.push_back(temp);
 		graph_T.push_back(temp);
 	}
-
+//	cout << "HI" << "\n";
 	int t1, t2;
 	for (int i=0; i<M; i++){
 		fin >> t1 >> t2;
@@ -113,16 +113,17 @@ int main(int argc, char *argv[]) {
 		graph_T[t2].push_back(t1);
 	}
 	
+//	cout << "HI" << "\n";
 	visited = VB(N, 0);
 	visited_rev = VB(N, 0);
 	
-	
+//	cout << "HI" << "\n";
 	for (int i=0; i < N; i++){
 		if (!visited[i]){
 			frontDFS(i, graph);
 		}
 	}
-	
+//	cout << "HI" << "\n";
 	for (int i=0; i < N; i++){
 		if (visited_rev[stored_v[N-i-1]]){
 			continue;
@@ -133,11 +134,13 @@ int main(int argc, char *argv[]) {
 		}
 		clusters.push_back(path);
 	}
-	
+//	cout << " HI" << "\n";
 	for (int j=0; j<clusters.size(); j++){
 		for (int i=0; i < clusters[j].size(); i++){
 		}
 	}
+	
+//	cout << "HI" << "\n";
 	
 	for (int i=0; i<clusters.size(); i++){
 		VB tempCB = VB(N, 0);
@@ -182,7 +185,7 @@ int main(int argc, char *argv[]) {
 	for (int i=0; i<clusters.size(); i++){
 		fout << clusters[i].size() << " ";
 	}
-	fout << "\n";
+//	fout << "\n";
 	fout << "\n";
 	for (int i=0; i < clusters.size(); i++){
 		for (int j=0; j < clusters[i].size(); j++){
@@ -190,12 +193,12 @@ int main(int argc, char *argv[]) {
 		}
 		fout << "\n";
 	}
-	fout << "\n";
+//	fout << "\n";
 	fout << arcs;
 	fout << "\n";
 	for (int i=0; i<clusters.size(); i++){
 		for (int j=0; j<CG[stored_C[clusters.size()-i-1]].size(); j++){
-			fout << stored_C[clusters.size()-i-1] << " " << CG[stored_C[clusters.size()-i-1]][j];
+			fout << stored_C[clusters.size()-i-1]  << " " << CG[stored_C[clusters.size()-i-1]][j] ;
 			fout << "\n";
 		}
 		
